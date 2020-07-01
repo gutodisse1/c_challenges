@@ -6,7 +6,7 @@ run:
 all: simple_make
  
 simple_make: Prompt.o DoubleLinkedList.o
-	gcc -o ./build/simple_make ./objects/Prompt.o ./objects/Queue.o ./objects/Stack.o
+	gcc -o ./build/simple_make ./objects/Prompt.o 
  
 Prompt.o: ./source/Prompt.c
 	gcc -o ./objects/Prompt.o ./source/Prompt.c -c -W -Wall -ansi -pedantic

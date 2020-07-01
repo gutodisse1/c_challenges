@@ -55,7 +55,7 @@ int main( void ) {
 			token = strtok(NULL, " ");
 			value = atoi(token);
 			printf("%d\n", Remove(&list, value));
-			/*List(&list);*/
+			List(&list);
 		}
 
 		if (strncmp(input, "clear\n", 5) == 0) {

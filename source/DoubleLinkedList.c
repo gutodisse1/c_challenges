@@ -103,7 +103,9 @@ void Clear(sList * plist){
 }
 
 
-/* NÃO ESTÁ FUNCIONANDO */
+/*  
+ * ESTÁ COM PROBLEMA QUANDO REMOVE O CABECALHO OU O ULTIMO NÓ
+ */
 int Remove(sList * plist, int value){
     int i;
     int valueGot;
@@ -112,15 +114,13 @@ int Remove(sList * plist, int value){
     
     sNode * tmpNode = plist->tail;
 
-    printf("%d", value);
     for(i=0; i<plist->count; i++){
-        printf("%d", i);
         if( value == i+1){
             valueGot = tmpNode->value;
             break;
         };
         tmpNode = tmpNode->prev;  
-    }
+    };
     
     nextNode = tmpNode->next;
     prevNode = tmpNode->prev;
@@ -129,7 +129,6 @@ int Remove(sList * plist, int value){
     if( tmpNode == plist->head ){
         printf("HEAD");
         plist->head = nextNode;
-        
     }
     
     /*tail*/
@@ -138,13 +137,13 @@ int Remove(sList * plist, int value){
         nextNode->next = NULL;
     }
     
-    if( tmpNode == plist->head && tmpNode != plist->tail ){
+    if( tmpNode != plist->head && tmpNode != plist->tail ){
         nextNode->prev = prevNode;
         prevNode->next = nextNode;
     }
    
     plist->count = plist->count - 1;
-    /*free(tmpNode); */
+    free(tmpNode);
 
     return valueGot;
 }
