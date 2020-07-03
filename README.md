@@ -1,8 +1,8 @@
 # c_challenges
 A small prompt to interact with a double linked list. The commands accepted are:
-* put <number>
-* remove <position>
-* get <position>
+* put `<number>`
+* remove `<position>`
+* get `<position>`
 * clear
 * getfirst
 * getlast
