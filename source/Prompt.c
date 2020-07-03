@@ -11,20 +11,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "DoubleLinkedList.c"
+#include "DoubleLinkedList.h"
 
+/*
+ * THIS FUNCTIONS IS UNUSED;
+ *  COULD BE REMOVED?
+ */
 void print_entry(char *entry) {
 	printf("You entered: %s\n", entry);
 }
 
+
 int main( void ) {
 	char input[201];
 	char *token;
-
+	int i;
 	sList list;
-	sNode * tmpNode;
-	DoubleLinkedInit(&list);
-
+	listInit(&list);
+	
+	for (i = 10; i > 1; i--)
+	{
+		Put(&list, i);	
+	}
+	List(&list);
+	
 	while(1) {
 		printf("prompt> ");
 		if (fgets(input, 200, stdin) == NULL) {
@@ -37,24 +47,22 @@ int main( void ) {
 			int value;
 			token = strtok(NULL, " ");
 			value = atoi(token);
-			tmpNode = newNode(value);
-
-			DoubleLinkedAddHead(&list, tmpNode);
-			List(&list);
+			Put(&list, value);
 		}
 
 		if (strncmp(input, "get", 3) == 0) {
 			int value;
 			token = strtok(NULL, " ");
 			value = atoi(token);
-			printf("%d\n", Get(&list, value));
+			Get(&list, value);
 		}
 
 		if (strncmp(input, "remove", 6) == 0) {
 			int value;
 			token = strtok(NULL, " ");
 			value = atoi(token);
-			printf("%d\n", Remove(&list, value));
+
+			Remove(&list, value);
 			List(&list);
 		}
 
@@ -63,15 +71,19 @@ int main( void ) {
 		}
 
 		if (strncmp(input, "first\n", 5) == 0) {
-			printf("%d\n", GetFirst(&list));
+			GetFirst(&list);
 		}
 
 		if (strncmp(input, "last\n", 5) == 0) {
-			printf("%d\n", GetLast(&list));
+			GetLast(&list);
 		}
 
 		if (strncmp(input, "list\n", 5) == 0) {
 			List(&list);
+		}
+
+		if (strncmp(input, "sort\n", 5) == 0) {
+			Sort(&list);
 		}
 
 		if (strncmp(input, "exit\n", 5) == 0) {
@@ -79,6 +91,5 @@ int main( void ) {
 		}
 	}
 	
-
 	return EXIT_SUCCESS;
 }

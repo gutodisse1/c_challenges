@@ -7,35 +7,36 @@
  Description : Dynamic DoublY linked list written in C
  ============================================================================
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "DoubleLinkedList.h"
+#include <stdio.h>   /* printf, free */
+#include <stdlib.h>  /* printf, free */
 
-#define LIST_OK     0
-#define LIST_ERROR  -1
+/*
+ ============================================================================
+  NODES FUNCTIONS
+ ============================================================================
+*/
+
+/*
+ * TODO: ADD ERROR HANDLINGs
+ */
+sNode * newNode(int value){
+    sNode * newNode;
+    newNode = (sNode *) malloc(sizeof(sNode));
+    newNode->value = value;
+
+    return newNode;
+}
 
 
-/* DATA STRUCT */
-struct Node
-{
-    int value;
-    struct Node * prev;
-    struct Node * next;
-};
+/*
+ ============================================================================
+  LIST FUNCTIONS
+ ============================================================================
+*/
 
-struct List
-{
-    struct Node * head;
-    struct Node * tail;
-    int count;
-};
-
-/* DATA TYPES */
-typedef struct Node     sNode;
-typedef struct List     sList;
-
-/* INITIALLY */
-int DoubleLinkedInit(sList * plist){
+/* INIT */
+int listInit(sList * plist){
     if(plist == NULL){
         return LIST_ERROR;
     }
@@ -47,7 +48,7 @@ int DoubleLinkedInit(sList * plist){
     return LIST_OK;
 }
 
-int DoubleLinkedAddHead(sList * plist, sNode * newNode){
+int listAddHead(sList * plist, sNode * newNode){
     sNode * tmpNode;
     
     if(plist == NULL || newNode == NULL){
@@ -67,26 +68,72 @@ int DoubleLinkedAddHead(sList * plist, sNode * newNode){
     return LIST_OK;
 }
 
+int listAddTail(sList * plist, sNode * newNode){
+    if(plist == NULL || newNode == NULL){
+        return LIST_ERROR;
+    }
+
+    if(plist->count == 0){
+        plist->head = newNode;
+        plist->tail = newNode;
+    } else {
+        plist->tail->next = newNode;
+        newNode->next = NULL;
+        newNode->prev = plist->tail;
+        plist->tail = newNode;
+    }
+    plist->count = plist->count + 1; 
+    return LIST_OK;
+}
+
+sNode * GetNode(sList * plist, int value){
+    int i;
+    sNode * tmpNode = plist->head;
+
+    /*
+     * TODO: CHANGE TO WHILE STATMENT
+     */
+    for(i=0; i<plist->count; i++){
+        if( value == i+1){
+            return tmpNode;
+        };
+        tmpNode = tmpNode->next;  
+    }
+    return 0;
+}
+
+
+/*
+ ============================================================================
+  PROMPT COMMANDS
+ ============================================================================
+*/
 void List(sList * plist){
-    sNode * tmpNode = plist->tail;
+    sNode * tmpNode = plist->head;
+    if(plist == NULL || tmpNode == NULL){
+        return;
+    }
+    
     while(tmpNode){
         printf("%d ", tmpNode->value );
-        tmpNode = tmpNode->prev;
+        tmpNode = tmpNode->next;
     };
     printf("\n");
 }
 
-int Get(sList * plist, int value){
-    int i;
-    
-    sNode * tmpNode = plist->tail;
-    for(i=0; i<plist->count; i++){
-        if( value == i+1){
-            return tmpNode->value;
-        };
-        tmpNode = tmpNode->prev;  
+void Put(sList * plist, int value){
+	sNode * tmpNode;
+    tmpNode = newNode(value);
+    listAddTail(plist, tmpNode);
+    List(plist);
+}
+
+void Get(sList * plist, int value){
+    sNode * tmpNode = GetNode(plist, value);
+    if(tmpNode)
+    {
+        printf("%d\n", tmpNode->value);
     }
-    return 0;
 }
 
 void Clear(sList * plist){
@@ -102,69 +149,83 @@ void Clear(sList * plist){
     plist->count = 0;
 }
 
-
-/*  
- * ESTÁ COM PROBLEMA QUANDO REMOVE O CABECALHO OU O ULTIMO NÓ
- */
-int Remove(sList * plist, int value){
-    int i;
-    int valueGot;
+void Remove(sList * plist, int value){
     sNode * nextNode;
     sNode * prevNode;
     
-    sNode * tmpNode = plist->tail;
+    sNode * tmpNode = GetNode(plist, value);
+    if(tmpNode)
+    {
+        printf("%d\n", tmpNode->value);
+        nextNode = tmpNode->next;
+        prevNode = tmpNode->prev;
 
-    for(i=0; i<plist->count; i++){
-        if( value == i+1){
-            valueGot = tmpNode->value;
-            break;
-        };
-        tmpNode = tmpNode->prev;  
-    };
+        if(tmpNode == plist->head && tmpNode == plist->tail)
+        {
+            plist->head = NULL;
+            plist->tail = NULL;
+        } else if( tmpNode == plist->head ){ /* HEAD */
+            plist->head = nextNode;
+            nextNode->prev = NULL;
+        } else if( tmpNode == plist->tail ){ /* TAIL */
+            plist->tail = prevNode;
+            prevNode->next = NULL;
+        } else if( tmpNode != plist->head 
+                    && tmpNode != plist->tail ){
+            nextNode->prev = prevNode;
+            prevNode->next = nextNode;
+        }
     
-    nextNode = tmpNode->next;
-    prevNode = tmpNode->prev;
-
-    /*head*/
-    if( tmpNode == plist->head ){
-        printf("HEAD");
-        plist->head = nextNode;
+        plist->count = plist->count - 1;
+        free(tmpNode);
     }
     
-    /*tail*/
-    if( tmpNode == plist->tail ){
-        plist->tail = prevNode;
-        nextNode->next = NULL;
-    }
-    
-    if( tmpNode != plist->head && tmpNode != plist->tail ){
-        nextNode->prev = prevNode;
-        prevNode->next = nextNode;
-    }
-   
-    plist->count = plist->count - 1;
-    free(tmpNode);
-
-    return valueGot;
 }
 
-int GetFirst(sList * plist){
+void GetFirst(sList * plist){
     sNode * tmpNode = plist->tail;
-    return tmpNode->value;
+    if(tmpNode){
+        printf("%d\n", tmpNode->value);
+    }
 }
 
-int GetLast(sList * plist){
+void GetLast(sList * plist){
     sNode * tmpNode = plist->head;
-    return tmpNode->value;
+    if(tmpNode){
+        printf("%d\n", tmpNode->value);
+    }
 }
 
-
-sNode * newNode(int value){
-    sNode * newNode;
-    newNode = (sNode *) malloc(sizeof(sNode));
-
-    newNode->value = value;
-
-    return newNode;
+void swapeNodes(sNode * a, sNode * b){
+    int tmp = a->value;
+    a->value = b->value;
+    b->value = tmp;
 }
 
+/*
+ *  CAN BE IMPROVED 
+ *   WITH BETTER SORT METHOD
+ */
+void Sort(sList * plist){
+    sNode * node;
+    sNode * nextNode;
+    int changes = 1;
+
+    while(changes){
+        changes = 0;
+
+        nextNode = plist->head;
+        while(nextNode){
+            node        = nextNode;        
+            nextNode    = nextNode->next;
+            if( nextNode && 
+                node->value > nextNode->value){
+                changes = 1;
+                swapeNodes(node, nextNode);
+            }
+        }       
+    };
+    List(plist); 
+}
+
+/*END OF FILE*/
