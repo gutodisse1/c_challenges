@@ -183,14 +183,14 @@ void Remove(sList * plist, int value){
 }
 
 void GetFirst(sList * plist){
-    sNode * tmpNode = plist->tail;
+    sNode * tmpNode = plist->head;
     if(tmpNode){
         printf("%d\n", tmpNode->value);
     }
 }
 
 void GetLast(sList * plist){
-    sNode * tmpNode = plist->head;
+    sNode * tmpNode = plist->tail;
     if(tmpNode){
         printf("%d\n", tmpNode->value);
     }
