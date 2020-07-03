@@ -1,7 +1,7 @@
 /*
  ============================================================================
  Name        : Prompt.c
- Author      : Gustavo Marques 
+ Author      : Gustavo Marques (2020)
  Version     : 0.1
  Copyright   : 
  Description : Hello World in C, Ansi-style
@@ -25,15 +25,8 @@ void print_entry(char *entry) {
 int main( void ) {
 	char input[201];
 	char *token;
-	int i;
 	sList list;
 	listInit(&list);
-	
-	for (i = 10; i > 1; i--)
-	{
-		Put(&list, i);	
-	}
-	List(&list);
 	
 	while(1) {
 		printf("prompt> ");
